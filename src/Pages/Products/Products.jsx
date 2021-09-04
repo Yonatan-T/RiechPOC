@@ -8,18 +8,11 @@ import {
     Fab
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import CustomerCard from './CustomerCard';
-import NewCustomer from './NewCustomer';
+import ProdcutBox from './ProdcutBox';
 
 
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        // flexGrow: 1,
-    },
-    control: {
-        padding: theme.spacing(2),
-    },
     content: {
         height: '100vh', 
         overflow: 'auto',
@@ -30,14 +23,6 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: theme.spacing(4),
     },
     appBarSpacer: theme.mixins.toolbar,
-    searchContainer: {
-        width: 'auto',
-        height: 50,
-        marginBottom: theme.spacing(2)
-    },
-    InputField: {
-        margin: theme.spacing(1)
-    },
     fixedButton: {
         margin: 0,
         top: '11vh',
@@ -48,15 +33,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Customers = () => {
+
+const Products = () => {
     const classes = useStyles();
     const [openDialog, setOpenDialog] = useState(false);
-    const [customerEdit, setCustomerEdit] = useState(null);
 
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-        setCustomerEdit(null);
-    }
     return (
         <main className={classes.content}>
             <div className={classes.appBarSpacer} />
@@ -68,26 +49,25 @@ const Customers = () => {
                     onClick={() => setOpenDialog(true)}>
                     <AddIcon />
                 </Fab>
-                <Paper className={classes.searchContainer} >
+                {/* <Paper className={classes.searchContainer} >
                     <TextField className={classes.InputField} size="small" placeholder='search By name' />
                     <TextField className={classes.InputField} size="small" placeholder='search By Phone Number' />
-                </Paper>
-                <Grid container className={classes.root} spacing={2}>
+                </Paper> */}
+                <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Grid container justifyContent="center" spacing={2}>
                             {[0, 1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6].map((value) => (
                                 <Grid key={value} item>
-                                    <CustomerCard />
+                                    <ProdcutBox/>
                                 </Grid>
                             ))}
                         </Grid>
                     </Grid>
                 </Grid>
             </Container>
-            <NewCustomer open={openDialog} onClose={handleCloseDialog} />
+            {/* <NewCustomer open={openDialog} onClose={handleCloseDialog} /> */}
         </main>
-    );
+    )
 }
 
-
-export default Customers
+export default Products

@@ -121,10 +121,17 @@ const Order = () => {
                             variant='outlined'
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={6}>
                         <FormControlLabel
                             control={<Checkbox color="secondary" />}
                             label="Expedite"
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            label="Custom Order#"
+                            fullWidth
+                            variant='outlined'
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -141,7 +148,7 @@ const Order = () => {
                     <Grid item xs={12}>
                         <Grid container justifyContent="center" spacing={2} >
                             <Grid item>
-                                <Card style={{ minWidth: '275px',height:'100%' }} onClick={_=> alert('add new item...')}>
+                                <Card style={{ minWidth: '275px', height: '100%' }} onClick={_ => alert('add new item...')}>
                                     <CardContent>
                                         <div style={{ display: 'flex', alignItems: 'center', }}>
                                             <Avatar >

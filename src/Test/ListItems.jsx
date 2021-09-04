@@ -17,7 +17,7 @@ export const MainListItems = () => {
   const history = useHistory();
   return (
     <div>
-      <ListItem button  onClick={_ => history.push('/')}>
+      <ListItem button onClick={_ => history.push('/')}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
@@ -29,11 +29,11 @@ export const MainListItems = () => {
         </ListItemIcon>
         <ListItemText primary="Orders" />
       </ListItem>
-      <ListItem button  onClick={_ => history.push('/customers')}>
+      <ListItem button onClick={_ => history.push('/customers')}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
-          <ListItemText primary="Customers" />
+        <ListItemText primary="Customers" />
       </ListItem>
       {/* <ListItem button>
         <ListItemIcon>
@@ -51,20 +51,41 @@ export const MainListItems = () => {
   );
 }
 
-export const secondaryListItems = (
-  <div>
-    <ListSubheader inset>Managment</ListSubheader>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Products" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Services" />
-    </ListItem>
-  </div>
-);
+// export const secondaryListItems = (
+//   <div>
+//     <ListSubheader inset>Managment</ListSubheader>
+//     <ListItem button>
+//       <ListItemIcon>
+//         <AssignmentIcon />
+//       </ListItemIcon>
+//       <ListItemText primary="Products" />
+//     </ListItem>
+//     <ListItem button>
+//       <ListItemIcon>
+//         <AssignmentIcon />
+//       </ListItemIcon>
+//       <ListItemText primary="Services" />
+//     </ListItem>
+//   </div>
+// );
+
+export const SecondaryListItems = () => {
+  const history = useHistory();
+
+  return (
+    <div>
+      <ListSubheader inset>Managment</ListSubheader>
+      <ListItem button onClick={_ => history.push('/Products')}>
+        <ListItemIcon>
+          <AssignmentIcon />
+        </ListItemIcon>
+        <ListItemText primary="Products" />
+      </ListItem>
+      <ListItem button onClick={_ => history.push('/Services')}>
+        <ListItemIcon>
+          <AssignmentIcon />
+        </ListItemIcon>
+        <ListItemText primary="Services" />
+      </ListItem>
+    </div>)
+}

@@ -18,7 +18,7 @@ import Paper from '@material-ui/core/Paper';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { MainListItems, secondaryListItems } from './ListItems';
+import { MainListItems, SecondaryListItems } from './ListItems';
 import {
   BrowserRouter as Router,
   Switch,
@@ -33,6 +33,8 @@ import Main from './Main';
 import Customers from '../Pages/Customers/Customers';
 import Orders from '../Pages/Orders/Orders';
 import Order from '../Pages/Order/Order';
+import Products from '../Pages/Products/Products';
+import Services from '../Pages/Services/Services';
 
 function Copyright() {
   return (
@@ -180,13 +182,15 @@ export default function Dashboard() {
             <Divider />
             <List><MainListItems/></List>
             <Divider />
-            <List>{secondaryListItems}</List>
+            <List><SecondaryListItems/></List>
           </Drawer>
           {/* content */}
           <Route path='/' exact component={Main} />
           <Route path='/customers' component={Customers} />
           <Route path='/Orders' component={Orders} />
           <Route path='/Order/' component={Order} />
+          <Route path='/products' component={Products} />
+          <Route path='/services' component={Services} />
         </Router>
       </div>
     </switch>
