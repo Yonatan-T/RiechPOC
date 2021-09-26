@@ -144,7 +144,7 @@ export default function Dashboard() {
   return (
     <switch>       {/* this switch is for the router.. */}
       <div className={classes.root}>
-        <Router>
+        <Router basename='/RiechPOC'>
           <CssBaseline />
           <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
             <Toolbar className={classes.toolbar}>
@@ -158,7 +158,7 @@ export default function Dashboard() {
                 <MenuIcon />
               </IconButton>
               <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                My Business Name...
+              Amur Designs
               </Typography>
               <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">

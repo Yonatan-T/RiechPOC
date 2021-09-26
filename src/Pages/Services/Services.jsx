@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import ServiceBox from './ServiceBox';
+import ServiceEdit from './ServiceEdit';
 
 
 
@@ -65,7 +66,7 @@ const Services = () => {
                     </Grid>
                 </Grid>
             </Container>
-            {/* <NewCustomer open={openDialog} onClose={handleCloseDialog} /> */}
+            <ServiceEdit open={openDialog}/>
         </main>
     )
 }

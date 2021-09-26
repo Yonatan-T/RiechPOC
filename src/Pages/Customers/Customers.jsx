@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     makeStyles,
     Container,
@@ -10,6 +10,8 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import CustomerCard from './CustomerCard';
 import NewCustomer from './NewCustomer';
+import { supabase } from '../../Resources/SupaBase';
+
 
 
 
@@ -21,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
     },
     content: {
-        height: '100vh', 
+        height: '100vh',
         overflow: 'auto',
         width: '100%'
     },
@@ -50,12 +52,29 @@ const useStyles = makeStyles((theme) => ({
 
 const Customers = () => {
     const classes = useStyles();
+    const [customersList, setCustomersList] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
-    const [customerEdit, setCustomerEdit] = useState(null);
+    const [customerEditId, setCustomerEditId] = useState(null);
+
+    useEffect(() => {
+        fetchCustomers();
+    }, [])
+
+    const fetchCustomers = async () => {
+        const { data, error } = await supabase.from('Customers').select();
+        console.log(data);
+        setCustomersList(data);
+    }
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
-        setCustomerEdit(null);
+        setCustomerEditId(null);
+    }
+
+    const openEdit = id => {
+        setCustomerEditId(id);
+        setOpenDialog(true);
     }
     return (
         <main className={classes.content}>
@@ -75,16 +94,19 @@ const Customers = () => {
                 <Grid container className={classes.root} spacing={2}>
                     <Grid item xs={12}>
                         <Grid container justifyContent="center" spacing={2}>
-                            {[0, 1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6].map((value) => (
-                                <Grid key={value} item>
-                                    <CustomerCard />
+                            {customersList.map((_customer) => (
+                                <Grid key={_customer.id} item>
+                                    <CustomerCard
+                                        customer={_customer}
+                                        handleOpen={_ => openEdit(_customer.id)}
+                                        key={_customer.id} />
                                 </Grid>
                             ))}
                         </Grid>
                     </Grid>
                 </Grid>
             </Container>
-            <NewCustomer open={openDialog} onClose={handleCloseDialog} />
+            <NewCustomer open={openDialog} onClose={handleCloseDialog} customerId={customerEditId} />
         </main>
     );
 }

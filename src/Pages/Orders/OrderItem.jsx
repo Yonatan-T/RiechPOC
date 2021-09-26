@@ -69,7 +69,8 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: theme.spacing(4),
         [theme.breakpoints.down('sm')]: {
             marginLeft: 0
-        }
+        },
+        // verticalAlign: 'text-bottom'
     },
     inlineRight: {
         width: '30%',
@@ -112,6 +113,9 @@ const OrderItem = () => {
                         {/* <Typography style={{ textTransform: 'uppercase' }} color='secondary' gutterBottom>
                             
                         </Typography> */}
+                        <Typography variant="h6" gutterBottom>
+                            #5678
+                        </Typography>
                         <Typography variant="h6" gutterBottom>
                             #1234
                         </Typography>

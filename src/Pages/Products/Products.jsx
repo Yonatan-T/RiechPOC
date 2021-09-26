@@ -9,12 +9,13 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import ProdcutBox from './ProdcutBox';
+import ProductEdit from './ProductEdit';
 
 
 
 const useStyles = makeStyles((theme) => ({
     content: {
-        height: '100vh', 
+        height: '100vh',
         overflow: 'auto',
         width: '100%'
     },
@@ -58,7 +59,7 @@ const Products = () => {
                         <Grid container justifyContent="center" spacing={2}>
                             {[0, 1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6].map((value) => (
                                 <Grid key={value} item>
-                                    <ProdcutBox/>
+                                    <ProdcutBox />
                                 </Grid>
                             ))}
                         </Grid>
@@ -66,6 +67,7 @@ const Products = () => {
                 </Grid>
             </Container>
             {/* <NewCustomer open={openDialog} onClose={handleCloseDialog} /> */}
+            <ProductEdit open={openDialog} />
         </main>
     )
 }

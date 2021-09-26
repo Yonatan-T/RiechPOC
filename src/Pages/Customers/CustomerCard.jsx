@@ -19,26 +19,29 @@ const useStyles = makeStyles({
 
 });
 
-const CustomerCard = ({ person }) => {
+const CustomerCard = ({ customer, handleOpen }) => {
     const classes = useStyles();
-
+    const avatarLetter = customer.last_name[0].toUpperCase();
     return (
         <Card className={classes.root} variant="outlined">
             <CardContent>
-                <Avatar>B</Avatar>
+                <Avatar>{avatarLetter}</Avatar>
                 <Typography variant="h5" component="h2">
-                    joe biden
+                    {customer.first_name} {customer.last_name}
                 </Typography>
                 <Typography className={classes.title} color="textSecondary" gutterBottom>
-                    Company Name
+                    {customer.company_name}
                 </Typography>
                 <Typography className={classes.pos} color="textSecondary">
-                    1-718-911-9911
+                    {customer.phone_1 ?? customer.phone_2} {/* todo: format phone*/}
                 </Typography>
 
             </CardContent>
             <CardActions>
-                <Button size="small">Open</Button>
+                <Button
+                    size="small"
+                    onClick={handleOpen}
+                >Open</Button>
             </CardActions>
         </Card>
     );
