@@ -153,7 +153,7 @@ const OrderItem = ({order}) => {
                         variant="contained"
                         color="primary"
                         className={classes.secondary}
-                        onClick={() => history.push(`/order`)}
+                        onClick={() => history.push(`/order/${order.id}`)}
                     >
                         open
                     </Button>

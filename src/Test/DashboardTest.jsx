@@ -188,7 +188,7 @@ export default function Dashboard() {
           <Route path='/' exact component={Main} />
           <Route path='/customers' component={Customers} />
           <Route path='/Orders' component={Orders} />
-          <Route path='/Order/' component={Order} />
+          <Route path='/Order/:id' component={Order} />
           <Route path='/products' component={Products} />
           <Route path='/services' component={Services} />
         </Router>

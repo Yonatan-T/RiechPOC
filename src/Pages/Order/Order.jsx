@@ -7,6 +7,9 @@ import AsyncAutocomplete from '../../Components/AsyncAutocomplete';
 import CustomerCard from '../Customers/CustomerCard';
 import OrderProduct from './OrderProduct';
 import SaveIcon from '@material-ui/icons/Save';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { supabase } from '../../Resources/SupaBase';
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -30,8 +33,35 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const orderObject = {
+    id: 0,
+    customer_id: 0,
+    custom_order_number: '',
+    completed_at: '',
+    delivered_at: '',
+    expected_at: '',
+    expedite: false,
+    notes: '',
+    price: '',
+}
+
 const Order = () => {
     const classes = useStyles();
+    let { id } = useParams()
+    const [order, setOrder] = useState({...orderObject})
+
+    useEffect(() => {
+        fetchOrder();
+    }, [])
+
+    const fetchOrder = async () => {
+        const { data, error } = await supabase
+            .from('Orders')
+            .select(`*`)
+            .eq('id', id);
+        setOrder(data[0]);
+        console.log(data[0])
+    }
 
     return (
         <main className={classes.content}>
@@ -39,7 +69,10 @@ const Order = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5em' }}>
                     <Typography component="h1" variant="h5" >
-                        Order # 123
+                        Order # {id}
+                    </Typography>
+                    <Typography   >
+                        {new Date(order.inserted_at).toDateString()}
                     </Typography>
                     <Fab
                         variant="contained"
@@ -82,48 +115,51 @@ const Order = () => {
                             label="Price"
                             fullWidth
                             variant='outlined'
+                            value={order.price}
                         />
                         {/* <AsyncAutocomplete lable='person'/> */}
                     </Grid>
-                    <Grid item xs={6}>
+                    {/* <Grid item xs={6}>
                         <TextField
-                            label="Created on"
-                            type="datetime-local"
-                            // defaultValue={'2021-08-17T19:14'}
-                            defaultValue={new Date(Date.now()).toISOString().split('.')[0]}
-                            fullWidth
-                            variant='outlined'
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            label="Completed On"
+                            label="Created at"
                             type="datetime-local"
                             defaultValue={new Date(Date.now()).toISOString().split('.')[0]}
                             fullWidth
                             variant='outlined'
+                            value={order.inserted_at?.split('.')[0]}
                         />
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={6}>
                         <TextField
-                            label="Delivered On"
+                            label="Completed at"
                             type="datetime-local"
                             fullWidth
                             variant='outlined'
+                            value={order.completed_at?.split('.')[0]}
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
-                            label="Expected On"
+                            label="Delivered at"
+                            type="datetime-local"
+                            fullWidth
+                            variant='outlined'
+                            value={order.delivered_at?.split('.')[0]}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            label="Expected at"
                             type="datetime-local"
                             className={classes.textField}
                             fullWidth
                             variant='outlined'
+                            value={order.expected_at?.split('.')[0]}
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <FormControlLabel
-                            control={<Checkbox color="secondary" />}
+                            control={<Checkbox color="secondary" value={order.expedite} />}
                             label="Expedite"
                         />
                     </Grid>
@@ -132,6 +168,7 @@ const Order = () => {
                             label="Custom Order#"
                             fullWidth
                             variant='outlined'
+                            value={order.custom_order_number}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -141,6 +178,7 @@ const Order = () => {
                             rows={4}
                             variant="outlined"
                             fullWidth
+                            value={order.notes || ''}
                         />
                     </Grid>
                 </Grid>
