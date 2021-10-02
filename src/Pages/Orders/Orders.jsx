@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     makeStyles,
     Container,
@@ -18,6 +18,8 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 
 import CustomerCard from '../Customers/CustomerCard';
 import OrderItem from './OrderItem';
+import { useEffect } from 'react';
+import { supabase } from '../../Resources/SupaBase';
 
 
 
@@ -105,6 +107,26 @@ const useStyles = makeStyles((theme) => ({
 const Orders = () => {
     const classes = useStyles();
 
+    const [orders, setOrders] = useState([])
+
+    useEffect(() => {
+        fetchOrders();
+    }, [])
+
+    const fetchOrders = async () => {
+        const { data, error } = await supabase
+            .from('Orders')
+            .select(`*,
+            customer:Customers (
+                first_name,
+                last_name
+              )
+            `);
+
+        // console.log('orders...', error, data)
+        setOrders(data)
+    }
+
     return (
         <main className={classes.content}>
             <div className={classes.appBarSpacer} />
@@ -115,14 +137,7 @@ const Orders = () => {
                 </Paper>
                 <Grid container justifyContent="center">
                     <Grid item xs={10}>
-                        <OrderItem />
-                        <OrderItem />
-                        <OrderItem />
-                        <OrderItem />
-                        <OrderItem />
-                        <OrderItem />
-                        <OrderItem />
-                        <OrderItem />
+                        {orders.map(x => <OrderItem key={x.id} order={x} />)}
                     </Grid>
                 </Grid>
             </Container>

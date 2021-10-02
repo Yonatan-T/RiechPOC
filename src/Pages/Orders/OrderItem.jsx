@@ -14,8 +14,8 @@ import {
     Button
 } from '@material-ui/core';
 
-import DashboardIcon from '@material-ui/icons/Dashboard';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { deepOrange, deepPurple, orange } from '@material-ui/core/colors';
 import { useHistory } from 'react-router-dom';
 
@@ -96,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const OrderItem = () => {
+const OrderItem = ({order}) => {
     const classes = useStyles();
     const history = useHistory()
 
@@ -105,7 +105,7 @@ const OrderItem = () => {
             <div className={classes.itemContainer}>
                 <div className={classes.avatarContainer}>
                     <Avatar className={classes.avatar}>
-                        <DashboardIcon />
+                        <ShoppingCartIcon />
                     </Avatar>
                 </div>
                 <div className={classes.baseline} style={{ margin: 10 }}>
@@ -114,15 +114,15 @@ const OrderItem = () => {
                             
                         </Typography> */}
                         <Typography variant="h6" gutterBottom>
-                            #5678
+                            #{order.id}
                         </Typography>
                         <Typography variant="h6" gutterBottom>
-                            #1234
+                            #{order.custom_order_number}
                         </Typography>
                     </div>
                     <div className={classes.inline}>
                         <Typography variant="h6" gutterBottom>
-                            Joe biden
+                            {order.customer.first_name} {order.customer.last_name}
                         </Typography>
                     </div>
                     <div className={classes.inline}>
@@ -130,7 +130,7 @@ const OrderItem = () => {
                             Amount
                         </Typography> */}
                         <Typography variant="h6" gutterBottom>
-                            6,600 USD
+                            ${order.price.toFixed(2)}
                         </Typography>
                     </div>
                     <div className={classes.inline}>
@@ -139,6 +139,7 @@ const OrderItem = () => {
                             label="In Progress"
                             variant="outlined"
                             color='primary'
+                            style={{backgroundColor:'green',color:'white'}}
                         />
                     </div>
                 </div>

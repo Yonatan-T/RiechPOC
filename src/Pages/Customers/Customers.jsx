@@ -5,7 +5,9 @@ import {
     Grid,
     Paper,
     TextField,
-    Fab
+    Fab,
+    Fade,
+    CircularProgress
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CustomerCard from './CustomerCard';
@@ -53,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 const Customers = () => {
     const classes = useStyles();
     const [customersList, setCustomersList] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [customerEditId, setCustomerEditId] = useState(null);
 
@@ -63,7 +65,7 @@ const Customers = () => {
 
     const fetchCustomers = async () => {
         const { data, error } = await supabase.from('Customers').select();
-        console.log(data);
+        setLoading(false);
         setCustomersList(data);
     }
 
@@ -76,6 +78,23 @@ const Customers = () => {
         setCustomerEditId(id);
         setOpenDialog(true);
     }
+
+    const progress = <div style={{ textAlign: 'center' }}>
+        <Fade
+            in={loading}
+            // style={{ marginTop: '20vh' }}
+            unmountOnExit
+        >
+            <CircularProgress
+                style={{
+                    marginBottom: 32,
+                    width: 100,
+                    height: 100
+                }}
+            />
+        </Fade>
+    </div>
+
     return (
         <main className={classes.content}>
             <div className={classes.appBarSpacer} />
@@ -91,6 +110,7 @@ const Customers = () => {
                     <TextField className={classes.InputField} size="small" placeholder='search By name' />
                     <TextField className={classes.InputField} size="small" placeholder='search By Phone Number' />
                 </Paper>
+                {progress}
                 <Grid container className={classes.root} spacing={2}>
                     <Grid item xs={12}>
                         <Grid container justifyContent="center" spacing={2}>
