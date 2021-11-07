@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     makeStyles,
     Container,
@@ -10,12 +10,13 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import ServiceBox from './ServiceBox';
 import ServiceEdit from './ServiceEdit';
+import { supabase } from '../../Resources/SupaBase';
 
 
 
 const useStyles = makeStyles((theme) => ({
     content: {
-        height: '100vh', 
+        height: '100vh',
         overflow: 'auto',
         width: '100%'
     },
@@ -37,7 +38,32 @@ const useStyles = makeStyles((theme) => ({
 
 const Services = () => {
     const classes = useStyles();
+    const [services, setServices] = useState([])
     const [openDialog, setOpenDialog] = useState(false);
+    const [serviceEditId, setServiceEditId] = useState(null);
+
+    useEffect(() => {
+        fetchServices();
+    }, [])
+
+    const fetchServices = async () => {
+        const { data, error } = await supabase
+            .from('Services')
+            .select();
+
+        setServices(data);
+    }
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+        setServiceEditId(null);
+        fetchServices();
+    }
+
+    const openEdit = id => {
+        setServiceEditId(id);
+        setOpenDialog(true);
+    }
 
     return (
         <main className={classes.content}>
@@ -57,16 +83,16 @@ const Services = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Grid container justifyContent="center" spacing={2}>
-                            {[0, 1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6].map((value) => (
-                                <Grid key={value} item>
-                                    <ServiceBox/>
+                            {services.map((x) => (
+                                <Grid key={x.id} item>
+                                    <ServiceBox key={x.id} service={x} handleOpen={_ => openEdit(x.id)} />
                                 </Grid>
                             ))}
                         </Grid>
                     </Grid>
                 </Grid>
             </Container>
-            <ServiceEdit open={openDialog}/>
+            <ServiceEdit open={openDialog} onClose={handleCloseDialog} editId={serviceEditId} />
         </main>
     )
 }

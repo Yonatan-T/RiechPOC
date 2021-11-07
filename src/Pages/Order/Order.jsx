@@ -48,10 +48,12 @@ const orderObject = {
 const Order = () => {
     const classes = useStyles();
     let { id } = useParams()
-    const [order, setOrder] = useState({...orderObject})
+    const [order, setOrder] = useState({ ...orderObject })
+    const [customerList, setCustomerList] = useState([]);
 
     useEffect(() => {
         fetchOrder();
+        fetchCustomers();
     }, [])
 
     const fetchOrder = async () => {
@@ -63,6 +65,18 @@ const Order = () => {
         console.log(data[0])
     }
 
+    const fetchCustomers = async () => {
+        const { data, error } = await supabase
+            .from('Customers')
+            .select(`id,first_name,last_name`)
+        console.log('customers', data)
+        setCustomerList(data)
+    }
+
+    const handleChange = (event) => {
+        setOrder({ ...order, [event.target.name]: event.target.value });
+    }
+
     return (
         <main className={classes.content}>
             <div className={classes.appBarSpacer} />
@@ -71,7 +85,7 @@ const Order = () => {
                     <Typography component="h1" variant="h5" >
                         Order # {id}
                     </Typography>
-                    <Typography   >
+                    <Typography style={{ marginRight: '50px' }} >
                         {new Date(order.inserted_at).toDateString()}
                     </Typography>
                     <Fab
@@ -85,14 +99,6 @@ const Order = () => {
                 </div>
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={6} >
-                        {/* <TextField
-                            required
-                            id="firstName"
-                            name="firstName"
-                            label="First name"
-                            fullWidth
-                            autoComplete="given-name"
-                        /> */}
                         <FormControl fullWidth variant='outlined'>
                             <InputLabel  >
                                 Customer Name
@@ -100,13 +106,12 @@ const Order = () => {
                             <Select
                                 displayEmpty
                                 label='Customer Name'
+                                value={order.customer_id}
+                                name={'customer_id'}
+                                onChange={handleChange}
                             >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                <MenuItem value={10}>joe biden</MenuItem>
-                                <MenuItem value={20}>Donald Trump</MenuItem>
-                                <MenuItem value={30}>mr. Bush</MenuItem>
+                                <MenuItem value=""></MenuItem>
+                                {customerList.map(x => <MenuItem key={x.id} value={x.id}> {x.last_name} {x.first_name}</MenuItem>)}
                             </Select>
                         </FormControl>
                     </Grid>
@@ -116,6 +121,8 @@ const Order = () => {
                             fullWidth
                             variant='outlined'
                             value={order.price}
+                            name={'price'}
+                            onChange={handleChange}
                         />
                         {/* <AsyncAutocomplete lable='person'/> */}
                     </Grid>
@@ -136,6 +143,8 @@ const Order = () => {
                             fullWidth
                             variant='outlined'
                             value={order.completed_at?.split('.')[0]}
+                            name={'completed_at'}
+                            onChange={handleChange}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -145,6 +154,8 @@ const Order = () => {
                             fullWidth
                             variant='outlined'
                             value={order.delivered_at?.split('.')[0]}
+                            name={'delivered_at'}
+                            onChange={handleChange}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -155,11 +166,13 @@ const Order = () => {
                             fullWidth
                             variant='outlined'
                             value={order.expected_at?.split('.')[0]}
+                            name={'expected_at'}
+                            onChange={handleChange}
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <FormControlLabel
-                            control={<Checkbox color="secondary" value={order.expedite} />}
+                            control={<Checkbox color="secondary" value={order.expedite} onClick={_ => setOrder({ ...order, expedite: !order.expedite })} />}
                             label="Expedite"
                         />
                     </Grid>
@@ -169,6 +182,8 @@ const Order = () => {
                             fullWidth
                             variant='outlined'
                             value={order.custom_order_number}
+                            name={'custom_order_number'}
+                            onChange={handleChange}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -178,7 +193,9 @@ const Order = () => {
                             rows={4}
                             variant="outlined"
                             fullWidth
-                            value={order.notes || ''}
+                            value={order.notes}
+                            name={'notes'}
+                            onChange={handleChange}
                         />
                     </Grid>
                 </Grid>

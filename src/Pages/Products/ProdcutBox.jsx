@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     box: {
         marginBottom: 40,
         // height: 65
-        maxWidth:'250px'
+        maxWidth: '250px'
     },
     actionButtom: {
         textTransform: "uppercase",
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const ProdcutBox = ({ Id, Name }) => {
+const ProdcutBox = ({ product, handleOpen }) => {
     const classes = useStyles();
 
     return (
@@ -35,29 +35,23 @@ const ProdcutBox = ({ Id, Name }) => {
                     color="textPrimary"
                     gutterBottom
                     variant="h6"
-
-
                 >
-                    Watch
+                    {product.name}
                 </Typography>
-                {/* <Typography variant="body1" gutterBottom>
-                    If you click in Getting Started, you will see a nice
-                    carousel
-                </Typography> */}
+
             </div>
             <div className={classes.alignRight}>
                 <Button
-                    // onClick={this.openDialog}
                     variant="outlined"
                     className={classes.actionButtom}
                 >
                     delete
                 </Button>
                 <Button
-                    // onClick={this.openGetStartedDialog}
                     color="primary"
                     variant="contained"
                     className={classes.actionButtom}
+                    onClick={handleOpen}
                 >
                     edit
                 </Button>

@@ -121,7 +121,8 @@ const Orders = () => {
                 first_name,
                 last_name
               )
-            `);
+            `)
+            .order('id', { ascending: false });
 
         // console.log('orders...', error, data)
         setOrders(data)

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     makeStyles,
     Container,
@@ -10,6 +10,7 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import ProdcutBox from './ProdcutBox';
 import ProductEdit from './ProductEdit';
+import { supabase } from '../../Resources/SupaBase';
 
 
 
@@ -37,7 +38,35 @@ const useStyles = makeStyles((theme) => ({
 
 const Products = () => {
     const classes = useStyles();
+    const [products, setProducts] = useState([])
     const [openDialog, setOpenDialog] = useState(false);
+    const [productEditId, setProductEditId] = useState(null)
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    const fetchProducts = async () => {
+        const { data, error } = await supabase
+            .from('Products')
+            .select();
+
+        console.log('products:',data)
+
+        setProducts(data);
+    }
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+        setProductEditId(null);
+        fetchProducts();
+    }
+
+    const openEdit = id => {
+        setProductEditId(id);
+        setOpenDialog(true);
+    }
+
 
     return (
         <main className={classes.content}>
@@ -57,17 +86,16 @@ const Products = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Grid container justifyContent="center" spacing={2}>
-                            {[0, 1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6].map((value) => (
-                                <Grid key={value} item>
-                                    <ProdcutBox />
+                            {products.map((x) => (
+                                <Grid key={x} item>
+                                    <ProdcutBox key={x.id} product={x} handleOpen={_ => openEdit(x.id)}/>
                                 </Grid>
                             ))}
                         </Grid>
                     </Grid>
                 </Grid>
             </Container>
-            {/* <NewCustomer open={openDialog} onClose={handleCloseDialog} /> */}
-            <ProductEdit open={openDialog} />
+            <ProductEdit open={openDialog} onClose={handleCloseDialog} editId={productEditId} />
         </main>
     )
 }

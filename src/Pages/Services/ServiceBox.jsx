@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const ServiceBox = ({ Id, Name }) => {
+const ServiceBox = ({ service, handleOpen }) => {
     const classes = useStyles();
 
     return (
@@ -36,26 +36,22 @@ const ServiceBox = ({ Id, Name }) => {
                     gutterBottom
                     variant="h6"
                 >
-                    welder
+                    {service.name}
                 </Typography>
-                {/* <Typography variant="body1" gutterBottom>
-                    If you click in Getting Started, you will see a nice
-                    carousel
-                </Typography> */}
+               
             </div>
             <div className={classes.alignRight}>
                 <Button
-                    // onClick={this.openDialog}
                     variant="outlined"
                     className={classes.actionButtom}
                 >
                     delete
                 </Button>
                 <Button
-                    // onClick={this.openGetStartedDialog}
                     color="primary"
                     variant="contained"
                     className={classes.actionButtom}
+                    onClick={handleOpen}
                 >
                     edit
                 </Button>
