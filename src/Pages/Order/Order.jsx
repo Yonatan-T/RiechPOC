@@ -8,8 +8,9 @@ import CustomerCard from '../Customers/CustomerCard';
 import OrderProduct from './OrderProduct';
 import SaveIcon from '@material-ui/icons/Save';
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { supabase } from '../../Resources/SupaBase';
+import SaveFab from '../../Components/SaveFab';
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -23,18 +24,10 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: theme.spacing(4),
     },
     appBarSpacer: theme.mixins.toolbar,
-    fixedButton: {
-        margin: 0,
-        top: '11vh',
-        right: 30,
-        bottom: 'auto',
-        left: 'auto',
-        position: 'fixed'
-    }
 }));
 
 const orderObject = {
-    id: 0,
+    // id: 0,
     customer_id: 0,
     custom_order_number: '',
     completed_at: '',
@@ -50,11 +43,30 @@ const Order = () => {
     let { id } = useParams()
     const [order, setOrder] = useState({ ...orderObject })
     const [customerList, setCustomerList] = useState([]);
+    const [orderItems, setOrderItems] = useState([])
+    const [saving, setSaving] = useState(false);
+    const [saved, setSaved] = useState(false);
+    const timer = useRef();
+
 
     useEffect(() => {
         fetchOrder();
         fetchCustomers();
+        fetchOrderItems();
+
+        return () => {
+            clearTimeout(timer.current);
+        };
     }, [])
+
+    useEffect(() => {
+        if (saved) {
+            setSaving(false);
+            timer.current = window.setTimeout(() => {
+                setSaved(false);
+            }, 1500);
+        }
+    }, [saved])
 
     const fetchOrder = async () => {
         const { data, error } = await supabase
@@ -63,6 +75,20 @@ const Order = () => {
             .eq('id', id);
         setOrder(data[0]);
         console.log(data[0])
+    }
+
+    const fetchOrderItems = async () => {
+        const { data, error } = await supabase
+            .from('Order_Items')
+            .select(`*,
+            product:Products (
+                name
+              )
+            `)
+            .eq('order_id', id);
+        console.log('oreder_items')
+        console.log(data)
+        setOrderItems(data);
     }
 
     const fetchCustomers = async () => {
@@ -77,6 +103,21 @@ const Order = () => {
         setOrder({ ...order, [event.target.name]: event.target.value });
     }
 
+    const handleSave = async () => {
+        setSaving(true);
+        let failed;
+        const obj = Object.keys(orderObject).reduce((result, key) => ({ ...result, [key]: order[key] }), {})
+        const { data, error } = await supabase
+            .from('Orders')
+            .update(obj)
+            .match({ id: id })
+        failed = error
+        setSaved(true);
+
+        if (failed)
+            alert("somting went wrong please contact support")
+    };
+
     return (
         <main className={classes.content}>
             <div className={classes.appBarSpacer} />
@@ -88,14 +129,7 @@ const Order = () => {
                     <Typography style={{ marginRight: '50px' }} >
                         {new Date(order.inserted_at).toDateString()}
                     </Typography>
-                    <Fab
-                        variant="contained"
-                        color="secondary"
-                        size="large"
-                        className={classes.fixedButton}
-                    >
-                        <SaveIcon />
-                    </Fab>
+                    <SaveFab loading={saving} success={saved} onClick={handleSave} />
                 </div>
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={6} >
@@ -213,9 +247,9 @@ const Order = () => {
                                     </CardContent>
                                 </Card>
                             </Grid>
-                            {[0, 1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6].map((value) => (
-                                <Grid key={value} item>
-                                    <OrderProduct />
+                            {orderItems.map((value) => (
+                                <Grid key={value.id} item>
+                                    <OrderProduct key={value.id} orderItem={value} />
                                 </Grid>
                             ))}
                         </Grid>

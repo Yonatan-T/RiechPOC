@@ -47,7 +47,8 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const OrderProduct = () => {
+const OrderProduct = ({orderItem}) => {
+    console.log('orderitem:',orderItem)
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
 
@@ -59,26 +60,26 @@ const OrderProduct = () => {
         <Card className={classes.root}>
             <CardContent>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar className={classes.avatar}>
-                        R
+                    <Avatar className={classes.avatar} >
+                        {orderItem.product.name[0].toUpperCase()}
                     </Avatar>
                     <div style={{ marginLeft: '2em' }}>
                         <Typography variant="h5" component="h2">
-                            Watch
+                            {orderItem.product.name}
                         </Typography>
                         <Typography color="textSecondary">
-                            #123456
+                            #{orderItem.id}
                         </Typography>
                     </div>
                 </div>
             </CardContent>
             <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
+                {/* <IconButton aria-label="add to favorites">
                     <FavoriteIcon />
                 </IconButton>
                 <IconButton aria-label="share">
                     <ShareIcon />
-                </IconButton>
+                </IconButton> */}
                 <IconButton
                     className={clsx(classes.expand, {
                         [classes.expandOpen]: expanded,
@@ -90,7 +91,6 @@ const OrderProduct = () => {
                     <ExpandMoreIcon />
                 </IconButton>
             </CardActions>
-            {/* <Collapse in={expanded} timeout="auto" unmountOnExit> */}
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
                     <List dense className={classes.list}>

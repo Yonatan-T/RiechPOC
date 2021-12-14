@@ -35,6 +35,7 @@ import Orders from '../Pages/Orders/Orders';
 import Order from '../Pages/Order/Order';
 import Products from '../Pages/Products/Products';
 import Services from '../Pages/Services/Services';
+import Process from '../Pages/Process/Process';
 
 function Copyright() {
   return (
@@ -191,6 +192,7 @@ export default function Dashboard() {
           <Route path='/Order/:id' component={Order} />
           <Route path='/products' component={Products} />
           <Route path='/services' component={Services} />
+          <Route path='/Process' component={Process} />
         </Router>
       </div>
     </switch>
