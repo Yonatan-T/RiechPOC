@@ -96,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const OrderItem = ({order}) => {
+const OrderItem = ({ order }) => {
     const classes = useStyles();
     const history = useHistory()
 
@@ -116,9 +116,9 @@ const OrderItem = ({order}) => {
                         <Typography variant="h6" gutterBottom>
                             #{order.id}
                         </Typography>
-                        <Typography variant="h6" gutterBottom>
+                        {order.custom_order_number && <Typography variant="h6" gutterBottom>
                             #{order.custom_order_number}
-                        </Typography>
+                        </Typography>}
                     </div>
                     <div className={classes.inline}>
                         <Typography variant="h6" gutterBottom>
@@ -139,7 +139,7 @@ const OrderItem = ({order}) => {
                             label="In Progress"
                             variant="outlined"
                             color='primary'
-                            style={{backgroundColor:'green',color:'white'}}
+                            style={{ backgroundColor: 'green', color: 'white' }}
                         />
                     </div>
                 </div>

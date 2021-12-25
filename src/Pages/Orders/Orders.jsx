@@ -1,25 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     makeStyles,
     Container,
     Grid,
     Paper,
     TextField,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Avatar,
-    Typography
+    Fab,
 } from '@material-ui/core';
-
-import DashboardIcon from '@material-ui/icons/Dashboard';
-
-
-import CustomerCard from '../Customers/CustomerCard';
-import OrderItem from './OrderItem';
-import { useEffect } from 'react';
+import AddIcon from '@material-ui/icons/Add';
 import { supabase } from '../../Resources/SupaBase';
+import OrderItem from './OrderItem';
+import NewOrder from '../Order/NewOrder';
 
 
 
@@ -101,6 +92,14 @@ const useStyles = makeStyles((theme) => ({
     },
     backButton: {
         marginRight: theme.spacing(2)
+    },
+    fixedButton: {
+        margin: 0,
+        top: '11vh',
+        right: 30,
+        bottom: 'auto',
+        left: 'auto',
+        position: 'fixed'
     }
 }));
 
@@ -108,6 +107,7 @@ const Orders = () => {
     const classes = useStyles();
 
     const [orders, setOrders] = useState([])
+    const [openNewOrder, setOpenNewOrder] = useState(false);
 
     useEffect(() => {
         fetchOrders();
@@ -132,6 +132,13 @@ const Orders = () => {
         <main className={classes.content}>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
+                <Fab className={classes.fixedButton}
+                    variant="contained"
+                    color="secondary"
+                    size="large"
+                    onClick={() => setOpenNewOrder(true)}>
+                    <AddIcon />
+                </Fab>
                 <Paper className={classes.searchContainer} >
                     <TextField className={classes.InputField} size="small" placeholder='search By name' />
                     <TextField className={classes.InputField} size="small" placeholder='search By Phone Number' />
@@ -142,6 +149,7 @@ const Orders = () => {
                     </Grid>
                 </Grid>
             </Container>
+            <NewOrder open={openNewOrder} handleClose={() => setOpenNewOrder(false)} />
         </main>
     );
 }

@@ -46,6 +46,7 @@ const Order = () => {
     const [orderItems, setOrderItems] = useState([])
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
+    const [showNewItemDialog, setShowNewItemDialog] = useState(false)
     const timer = useRef();
 
 

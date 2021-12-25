@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -17,6 +17,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SettingsInputSvideoIcon from '@material-ui/icons/SettingsInputSvideo';
 import { List, ListItem, ListItemText, ListItemAvatar, ListItemSecondaryAction, ListItemIcon, Checkbox, Divider } from '@material-ui/core';
+import { supabase } from '../../Resources/SupaBase';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -47,10 +48,30 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const OrderProduct = ({orderItem}) => {
-    console.log('orderitem:',orderItem)
+const OrderProduct = ({ orderItem }) => {
+    // console.log('orderitem:', orderItem)
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
+    const [events, setEvents] = useState([])
+
+    useEffect(() => {
+        if (expanded) {
+            const fetchEvents = async () => {
+                const { data, error } = await supabase
+                    .from('Work_Events')
+                    .select(`
+                            *,
+                            Services ( name ),
+                            Employees(first_name,last_name)
+                        `)
+                    .eq('order_item_id', orderItem.id)
+                    .order('arrived_at', { ascending: false });
+                // console.log('events', data)
+                setEvents(data);
+            }
+            fetchEvents();
+        }
+    }, [expanded])
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -94,7 +115,7 @@ const OrderProduct = ({orderItem}) => {
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
                     <List dense className={classes.list}>
-                        {['Jewler','Welder','Polish','Dimond Setting'].map((value) => {
+                        {events.map((value) => {
                             return (
                                 <>
                                     <ListItem key={value} style={{ marginTop: '1em', marginBottom: '1em' }}>
@@ -106,11 +127,12 @@ const OrderProduct = ({orderItem}) => {
                                         <ListItemIcon>
                                             <SettingsInputSvideoIcon />
                                         </ListItemIcon>
-                                        <ListItemText primary={value} />
+                                        <ListItemText primary={value.Services.name} />
                                         <ListItemSecondaryAction>
                                             <Checkbox
                                                 edge="end"
                                                 onChange={() => { }}
+                                                checked
                                             // checked={checked.indexOf(value) !== -1}
                                             // inputProps={{ 'aria-labelledby': labelId }}
                                             />
