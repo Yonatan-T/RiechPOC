@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
-import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
@@ -11,24 +10,16 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-// import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { MainListItems, SecondaryListItems } from './ListItems';
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
   Link
 } from "react-router-dom";
 
-import Chart from './Chart';
-import Deposits from './Deposits';
-// import Orders from './Orders';
 import Main from './Main';
 import Customers from '../Pages/Customers/Customers';
 import Orders from '../Pages/Orders/Orders';
@@ -36,13 +27,19 @@ import Order from '../Pages/Order/Order';
 import Products from '../Pages/Products/Products';
 import Services from '../Pages/Services/Services';
 import Process from '../Pages/Process/Process';
+import { Redirect } from 'react-router-dom';
+import SafeRoute from '../Resources/SafeRoute';
+import Login from '../Pages/Login/Login';
+import { supabase } from '../Resources/SupaBase';
+import { useRouteMatch } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" to="https://material-ui.com/">
-        Your Website
+        Amur Design
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -133,13 +130,29 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(false);
+  const [user, setUser] = useState(supabase.auth.user());
+
+  useEffect(() => {
+    const getLoggedUser = async () => {
+      const res = await supabase.auth.user();
+      if (res) setUser(res)
+    }
+    getLoggedUser();
+  }, [])
+
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (!error) setUser(null);
+  }
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   return (
@@ -147,7 +160,7 @@ export default function Dashboard() {
       <div className={classes.root}>
         <Router basename='/RiechPOC'>
           <CssBaseline />
-          <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+          {user && <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
             <Toolbar className={classes.toolbar}>
               <IconButton
                 edge="start"
@@ -159,16 +172,16 @@ export default function Dashboard() {
                 <MenuIcon />
               </IconButton>
               <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-              Amur Designs
+                Amur Designs
               </Typography>
-              <IconButton color="inherit">
+              <IconButton color="inherit" onClick={signOut}>
                 <Badge badgeContent={4} color="secondary">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
             </Toolbar>
-          </AppBar>
-          <Drawer
+          </AppBar>}
+          {user && <Drawer
             variant="permanent"
             classes={{
               paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
@@ -181,18 +194,22 @@ export default function Dashboard() {
               </IconButton>
             </div>
             <Divider />
-            <List><MainListItems/></List>
+            <List><MainListItems /></List>
             <Divider />
-            <List><SecondaryListItems/></List>
-          </Drawer>
+            <List><SecondaryListItems /></List>
+          </Drawer>}
           {/* content */}
-          <Route path='/' exact component={Main} />
-          <Route path='/customers' component={Customers} />
-          <Route path='/Orders' component={Orders} />
-          <Route path='/Order/:id' component={Order} />
-          <Route path='/products' component={Products} />
-          <Route path='/services' component={Services} />
-          <Route path='/Process' component={Process} />
+          <SafeRoute path='/' exact component={Main} user={user} />
+          <Route path='/login' >
+            <Login OnLogin={setUser} />
+          </Route>
+          {/* <Route path='/customers' component={Customers} /> */}
+          <SafeRoute path='/customers' component={Customers} user={user} />
+          <SafeRoute path='/Orders' component={Orders} user={user} />
+          <SafeRoute path='/Order/:id' component={Order} user={user} />
+          <SafeRoute path='/products' component={Products} user={user} />
+          <SafeRoute path='/services' component={Services} user={user} />
+          <SafeRoute path='/Process' component={Process} user={user} />
         </Router>
       </div>
     </switch>
